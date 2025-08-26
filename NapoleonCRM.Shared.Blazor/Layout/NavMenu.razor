@@ -1,0 +1,148 @@
+﻿@using System.Security.Claims
+@using NapoleonCRM.Shared.Blazor.Components.Themes
+@inject AppService AppService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IStorageService LocalStorageService
+
+<MudThemeProvider Theme="_theme" IsDarkMode="_isDarkMode" />
+<MudAppBar Color="Color.Inherit">
+    <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+    <MudText>CRM Menu</MudText>
+    <MudSpacer />
+    <ThemesMenu @bind-ThemingDrawerOpen="_themingDrawerOpen"
+            ThemeManager="_themeManager"
+            ThemeManagerChanged="ThemeManagerChanged" />
+
+    <MudLink OnClick="@(() => _themingDrawerOpen = true)" Color="Color.Inherit">
+        <MudTooltip Arrow="true"
+                    Placement="Placement.Left"
+                    Text="Themes">
+            <MudIcon Icon="@Icons.Material.Outlined.Brush"
+                    Color="Color.Inherit"
+                    Class="mr-5"/>
+        </MudTooltip>
+        </MudLink>
+    <MudLink Href="https://www.siklarlis.gr/" Color="Color.Inherit">About</MudLink>
+</MudAppBar>
+<MudDrawer @bind-Open="drawerOpen" ClipMode="DrawerClipMode.Always" Color="Color.Inherit" DrawerWidth="300px">
+    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Αρχική</MudNavLink>
+    <AuthorizeView>
+        <!-- ✅ Submenu starts here -->
+        <MudNavGroup Title="Φυσικά Πρόσωπα" Icon="@Icons.Material.Filled.Person">
+            <MudNavLink Href="/Customer" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.PeopleAlt">Πελάτες</MudNavLink>
+            <MudNavLink Href="/Contact" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.ContactMail">Επαφές</MudNavLink>
+        </MudNavGroup>
+        <!-- ✅ Submenu ends here -->
+        <!--<MudNavLink Href="/Customer" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.PeopleAlt">Πελάτες</MudNavLink>-->
+        <MudNavLink Href="/Address" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.HomeWork">Διευθύνσεις</MudNavLink>
+        <MudNavLink Href="/ProductCategory" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Category">Κατηγορίες Προιόντων</MudNavLink>
+        <MudNavLink Href="/ServiceCategory" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.HomeRepairService">Κατηγορίες Υπηρεσιών</MudNavLink>
+        <!--<MudNavLink Href="/Contact" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.ContactMail">Επαφές</MudNavLink>-->
+        <!--<MudNavLink Href="/Opportunity" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Newspaper">Opportunities</MudNavLink>-->
+        <!--<MudNavLink Href="/Lead" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Leaderboard">Leads</MudNavLink>-->
+        <MudNavLink Href="/Product" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.ProductionQuantityLimits">Προιόντα</MudNavLink>
+        <MudNavLink Href="/Service" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.TableChart">Υπηρεσίες</MudNavLink>
+        <MudNavLink Href="/Sale" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.PointOfSale">Πωλήσεις</MudNavLink>
+        <MudNavLink Href="/Vendor" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Store">Vendors</MudNavLink>
+        <MudNavLink Href="/SupportCase" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Support">Support Issues</MudNavLink>
+        <MudNavLink Href="/TodoTask" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Today">Εργασίες</MudNavLink>
+        <MudNavLink Href="/KanbanTodoTask" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Today">Kanban Πίνακας Εργασιών</MudNavLink>
+        <MudNavLink Href="/Reward" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Money">Rewards - Campaign</MudNavLink>
+    </AuthorizeView>
+    <AuthorizeView Roles="Administrator">
+        <MudNavLink Href="/user" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">User</MudNavLink>
+    </AuthorizeView>
+    <AuthorizeView>
+        <Authorized>
+            <MudNavLink Href="/account/changePassword" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Edit">Αλλαγή Password</MudNavLink>
+            <MudNavLink Href="/logout" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Logout">Logout (@context.User.Identity!.Name)</MudNavLink>
+        </Authorized>
+        <NotAuthorized>
+            <MudNavLink Href="/register" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Edit">Register</MudNavLink>
+            <MudNavLink Href="/login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Login">Login</MudNavLink>
+        </NotAuthorized>
+    </AuthorizeView>
+</MudDrawer>
+
+@code {
+    bool _dark = true;
+    private bool isDarkMode;
+    private MudThemeProvider? mudThemeProvider;
+    private bool drawerOpen = true;
+
+    private bool _themingDrawerOpen;
+
+    private MudTheme _theme = new();
+    private bool _isDarkMode = false;
+
+    private ThemeManagerModel _themeManager = new()
+    {
+        IsDarkMode = false,
+        PrimaryColor = "#594AE2",
+    };
+
+    private async Task UpdateThemeManagerLocalStorage()
+    {
+        await LocalStorageService.SetAsync("themeManager", _themeManager);
+    }
+
+    private async Task ThemeManagerChanged(ThemeManagerModel themeManager)
+    {
+        _themeManager = themeManager;
+
+        _isDarkMode = _themeManager.IsDarkMode;
+
+        _theme = new MudTheme()
+        {
+            PaletteLight = new PaletteLight()
+            {
+                Primary = _themeManager.PrimaryColor,
+                AppbarBackground = _themeManager.PrimaryColor,
+            },
+            PaletteDark = new PaletteDark()
+            {
+                Primary = _themeManager.PrimaryColor,
+            }
+        };
+
+        await UpdateThemeManagerLocalStorage();
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _themeManager = await LocalStorageService.GetAsync<ThemeManagerModel>("themeManager")
+            ?? new()
+            {
+                IsDarkMode = false,
+                PrimaryColor = "#594AE2",
+            };
+
+        await ThemeManagerChanged(_themeManager);
+
+    }
+                            
+    private void DrawerToggle()
+    {
+        drawerOpen = !drawerOpen;
+    }
+                                                        
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && mudThemeProvider != null)
+        {
+            isDarkMode = await mudThemeProvider.GetSystemPreference();
+            StateHasChanged();
+
+            await mudThemeProvider.WatchSystemPreference(OnSystemPreferenceChanged);
+        }
+    }
+
+    protected Task OnSystemPreferenceChanged(bool isDarkMode)
+    {
+        this.isDarkMode = isDarkMode;
+        StateHasChanged();
+
+        return Task.CompletedTask;
+    }
+}

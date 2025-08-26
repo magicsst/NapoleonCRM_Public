@@ -1,0 +1,32 @@
+[
+  {
+    "Id": 901,
+    "Street": "Ιερα Οδός 235",
+    "City": "Αιγάλεω",
+    "State": "ΑΤΗ",
+    "ZipCode": 12242,
+    "Country": "Ελλάδα",
+    "Photo": "https://upload.wikimedia.org/wikipedia/commons/1/19/U.S._Securities_and_Exchange_Commission_headquarters.JPG",
+    "Notes": ""
+  },
+  {
+    "Id": 902,
+    "Street": "Φιλαδελφείας 32",
+    "City": "Περιστέρι",
+    "State": "ΑΤΗ",
+    "ZipCode": 12323,
+    "Country": "Ελλάδα",
+    "Photo": "tech_park_address.jpg",
+    "Notes": "https://upload.wikimedia.org/wikipedia/commons/1/19/U.S._Securities_and_Exchange_Commission_headquarters.JPG"
+  },
+  {
+    "Id": 903,
+    "Street": "Μαρμαρά 22",
+    "City": "Αθήνα",
+    "State": "ΑΤΗ",
+    "ZipCode": 12345,
+    "Country": "Ελλάδα",
+    "Photo": "maple_street_address.jpg",
+    "Notes": "https://upload.wikimedia.org/wikipedia/commons/1/19/U.S._Securities_and_Exchange_Commission_headquarters.JPG"
+  }
+]
