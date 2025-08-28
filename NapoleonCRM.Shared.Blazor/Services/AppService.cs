@@ -962,6 +962,17 @@ public class AppService(
         return await response.Content.ReadFromJsonAsync<Order[]>();
     }
 
+    public Task<ODataResult<Order>?> ListOrderODataAsync(
+        int? top = null,
+        int? skip = null,
+        string? orderby = null,
+        string? filter = null,
+        bool count = false,
+        string? expand = null)
+    {
+        return GetODataAsync<Order>("Order", top, skip, orderby, filter, count, expand);
+    }
+
     public async Task<Order?> GetOrderByIdAsync(long key)
     {
         var token = await authenticationStateProvider.GetBearerTokenAsync()

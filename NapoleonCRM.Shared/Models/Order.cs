@@ -20,9 +20,6 @@ public class Order
     public string? ServiceId { get; set; }
   
     [DataMember]
-    public DateTime? OrderDate { get; set; }
-
-    [DataMember]
     public long? CustomerId { get; set; }
 
     [DataMember]
