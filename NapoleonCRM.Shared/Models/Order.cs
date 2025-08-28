@@ -22,10 +22,9 @@ public class Order
     public List<OrderDetail>? OrderDetails { get; set; }
 
     [DataMember]
-    public DateTime? OrderDate { get; set; }
-
-    [DataMember]
     public decimal? TotalAmount { get; set; }
+
+    public DateTime? OrderDate { get; set; }
 
     [DataMember]
     public DateTime? CreatedDate { get; set; }

@@ -31,4 +31,9 @@ public class OrderDetail
 
     [DataMember]
     public decimal? TotalPrice { get; set; }
+
+    public DateTime? CreatedDate { get; set; }
+
+    [DataMember]
+    public DateTime ModifiedDate { get; set; }
 }
