@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -26,6 +27,11 @@ public class OrderDetail
     public long? Quantity { get; set; }
 
     [DataMember]
+    public decimal? UnitPrice { get; set; }
+
+    [DataMember]
+    public decimal? TotalPrice { get; set; }
+
     public DateTime? CreatedDate { get; set; }
 
     [DataMember]
