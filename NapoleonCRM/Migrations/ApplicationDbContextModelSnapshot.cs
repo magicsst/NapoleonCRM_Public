@@ -645,9 +645,68 @@ namespace NapoleonCRM.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContactId");
+                b.HasIndex("ContactId");
 
-                    b.ToTable("Reward");
+                b.ToTable("Reward");
+                });
+
+            modelBuilder.Entity("NapoleonCRM.Shared.Models.Order", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CustomerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Order");
+                });
+
+            modelBuilder.Entity("NapoleonCRM.Shared.Models.OrderDetail", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("OrderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("Quantity")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderDetail");
                 });
 
             modelBuilder.Entity("NapoleonCRM.Shared.Models.Sale", b =>
@@ -1054,6 +1113,30 @@ namespace NapoleonCRM.Migrations
                         .HasForeignKey("ContactId");
                 });
 
+            modelBuilder.Entity("NapoleonCRM.Shared.Models.Order", b =>
+                {
+                    b.HasOne("NapoleonCRM.Shared.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("NapoleonCRM.Shared.Models.OrderDetail", b =>
+                {
+                    b.HasOne("NapoleonCRM.Shared.Models.Order", "Order")
+                        .WithMany("OrderDetail")
+                        .HasForeignKey("OrderId");
+
+                    b.HasOne("NapoleonCRM.Shared.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("NapoleonCRM.Shared.Models.Service", b =>
                 {
                     b.HasOne("NapoleonCRM.Shared.Models.Vendor", null)
@@ -1102,6 +1185,11 @@ namespace NapoleonCRM.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("NapoleonCRM.Shared.Models.Order", b =>
+                {
+                    b.Navigation("OrderDetail");
                 });
 #pragma warning restore 612, 618
         }

@@ -53,6 +53,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<SupportCase> SupportCase => Set<SupportCase>();
     public DbSet<TodoTask> TodoTask => Set<TodoTask>();
     public DbSet<Reward> Reward => Set<Reward>();
+    public DbSet<Order> Order => Set<Order>();
+    public DbSet<OrderDetail> OrderDetail => Set<OrderDetail>();
 
     public DbSet<Country> Country => Set<Country>();
 
@@ -118,6 +120,17 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<Reward>()
             .Property(e => e.ConversionRate)
             .HasPrecision(19, 4);
+
+        modelBuilder.Entity<Order>()
+            .HasMany(x => x.OrderDetail)
+            .WithOne(x => x.Order)
+            .HasForeignKey(x => x.OrderId);
+
+        modelBuilder.Entity<Order>()
+            .HasOne(x => x.Customer);
+
+        modelBuilder.Entity<OrderDetail>()
+            .HasOne(x => x.Product);
 
         modelBuilder.Entity<Customer>()
             .HasOne(x => x.Country); 
