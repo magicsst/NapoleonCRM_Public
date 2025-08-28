@@ -49,6 +49,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Product> Product => Set<Product>();
     public DbSet<Service> Service => Set<Service>();
     public DbSet<Sale> Sale => Set<Sale>();
+    public DbSet<Order> Order => Set<Order>();
+    public DbSet<OrderDetail> OrderDetail => Set<OrderDetail>();
     public DbSet<Vendor> Vendor => Set<Vendor>();
     public DbSet<SupportCase> SupportCase => Set<SupportCase>();
     public DbSet<TodoTask> TodoTask => Set<TodoTask>();
@@ -100,6 +102,30 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<Sale>()
             .Property(e => e.TotalAmount)
             .HasPrecision(19, 4);
+        modelBuilder.Entity<Order>()
+            .Property(e => e.TotalAmount)
+            .HasConversion<double>();
+        modelBuilder.Entity<Order>()
+            .Property(e => e.TotalAmount)
+            .HasPrecision(19, 4);
+        modelBuilder.Entity<Order>()
+            .HasOne(x => x.Customer);
+        modelBuilder.Entity<Order>()
+            .HasMany(x => x.OrderDetails);
+        modelBuilder.Entity<OrderDetail>()
+            .Property(e => e.UnitPrice)
+            .HasConversion<double>();
+        modelBuilder.Entity<OrderDetail>()
+            .Property(e => e.UnitPrice)
+            .HasPrecision(19, 4);
+        modelBuilder.Entity<OrderDetail>()
+            .Property(e => e.TotalPrice)
+            .HasConversion<double>();
+        modelBuilder.Entity<OrderDetail>()
+            .Property(e => e.TotalPrice)
+            .HasPrecision(19, 4);
+        modelBuilder.Entity<OrderDetail>()
+            .HasOne(x => x.Product);
         modelBuilder.Entity<Vendor>()
             .HasOne(x => x.Address);
         modelBuilder.Entity<Vendor>()

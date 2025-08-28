@@ -54,6 +54,8 @@ modelBuilder.EntitySet<ApplicationUserDto>("User");
 modelBuilder.EntitySet<Country>("Country");
 modelBuilder.EntitySet<Currency>("Currency");
 modelBuilder.EntitySet<CategoryFirst>("CategoryFirst");
+modelBuilder.EntitySet<Order>("Order");
+modelBuilder.EntitySet<OrderDetail>("OrderDetail");
 
 builder.Services.AddControllers()
     .AddOData(options => options.EnableQueryFeatures().AddRouteComponents("odata", modelBuilder.GetEdmModel()))
