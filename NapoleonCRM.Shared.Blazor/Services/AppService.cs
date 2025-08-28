@@ -947,6 +947,87 @@ public class AppService(
         await HandleResponseErrorsAsync(response);
     }
 
+    public async Task<Order[]?> ListOrderAsync()
+    {
+        var token = await authenticationStateProvider.GetBearerTokenAsync()
+            ?? throw new Exception("Not authorized");
+
+        HttpRequestMessage request = new(HttpMethod.Get, "/api/order");
+        request.Headers.Authorization = new("Bearer", token);
+
+        var response = await httpClient.SendAsync(request);
+
+        await HandleResponseErrorsAsync(response);
+
+        return await response.Content.ReadFromJsonAsync<Order[]>();
+    }
+
+    public async Task<Order?> GetOrderByIdAsync(long key)
+    {
+        var token = await authenticationStateProvider.GetBearerTokenAsync()
+            ?? throw new Exception("Not authorized");
+
+        HttpRequestMessage request = new(HttpMethod.Get, $"/api/order/{key}");
+        request.Headers.Authorization = new("Bearer", token);
+
+        var response = await httpClient.SendAsync(request);
+
+        await HandleResponseErrorsAsync(response);
+
+        return await response.Content.ReadFromJsonAsync<Order>();
+    }
+
+    public async Task UpdateOrderAsync(long key, Order data)
+    {
+        if (data.CreatedDate == null)
+            data.CreatedDate = DateTime.UtcNow;
+        data.ModifiedDate = DateTime.UtcNow;
+
+        var token = await authenticationStateProvider.GetBearerTokenAsync()
+            ?? throw new Exception("Not authorized");
+
+        HttpRequestMessage request = new(HttpMethod.Put, $"/api/order/{key}");
+        request.Headers.Authorization = new("Bearer", token);
+        request.Content = JsonContent.Create(data);
+
+        var response = await httpClient.SendAsync(request);
+
+        await HandleResponseErrorsAsync(response);
+    }
+
+    public async Task<Order?> InsertOrderAsync(Order data)
+    {
+        if (data.CreatedDate == null)
+            data.CreatedDate = DateTime.UtcNow;
+        data.ModifiedDate = DateTime.UtcNow;
+
+        var token = await authenticationStateProvider.GetBearerTokenAsync()
+            ?? throw new Exception("Not authorized");
+
+        HttpRequestMessage request = new(HttpMethod.Post, "/api/order");
+        request.Headers.Authorization = new("Bearer", token);
+        request.Content = JsonContent.Create(data);
+
+        var response = await httpClient.SendAsync(request);
+
+        await HandleResponseErrorsAsync(response);
+
+        return await response.Content.ReadFromJsonAsync<Order>();
+    }
+
+    public async Task DeleteOrderAsync(long key)
+    {
+        var token = await authenticationStateProvider.GetBearerTokenAsync()
+            ?? throw new Exception("Not authorized");
+
+        HttpRequestMessage request = new(HttpMethod.Delete, $"/api/order/{key}");
+        request.Headers.Authorization = new("Bearer", token);
+
+        var response = await httpClient.SendAsync(request);
+
+        await HandleResponseErrorsAsync(response);
+    }
+
     public async Task<Sale[]?> ListSaleAsync()
     {
         var token = await authenticationStateProvider.GetBearerTokenAsync()
