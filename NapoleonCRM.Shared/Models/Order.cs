@@ -1,4 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using System.Runtime.Serialization;
 
 namespace NapoleonCRM.Shared.Models;
@@ -15,7 +18,7 @@ public class Order
 
     [DataMember]
     public string? ServiceId { get; set; }
-
+  
     [DataMember]
     public long? CustomerId { get; set; }
 
@@ -33,6 +36,11 @@ public class Order
 
     [DataMember]
     public string? Notes { get; set; }
+    
+  public Customer? Customer { get; set; }
+
+    [DataMember]
+    public List<OrderDetail>? OrderDetails { get; set; }
 
     [DataMember]
     public DateTime? CreatedDate { get; set; }
